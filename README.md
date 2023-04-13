@@ -1,6 +1,6 @@
 # Fernet
 
-A command-line tool that implements ["Fernet encryption"](https://cryptography.io/en/latest/fernet/).
+A command-line tool that implements [Fernet encryption](https://cryptography.io/en/latest/fernet/).
 
     usage: fernet [-h] [-p PASSWORD] [-r] {encrypt,decrypt} input_file output_file
 
