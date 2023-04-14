@@ -37,7 +37,7 @@ def read_fernet_header(fp: IO[bytes], raw: bool = False) -> bytes:
     return base64.b85decode(data[:salt_file_size])
 
 
-def fernet_encrypt(nput_file: str, output_file: str, password: str, raw: bool=False) -> None:
+def fernet_encrypt(input_file: str, output_file: str, password: str, raw: bool=False) -> None:
     salt = os.urandom(16)
 
     kdf = PBKDF2HMAC(
