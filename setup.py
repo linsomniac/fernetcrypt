@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name="fernetcrypt",
     version="1.0.0",
-    description="FernetCrypt CLI: Encrypt and decrypt files using a password.",
+    description="FernetCrypt CLI Encrypt and decrypt files using a password.",
     author="Sean Reifschneider",
     author_email="jafo00@gmail.com",
     url="https://github.com/linsomniac/fernetcrypt",
