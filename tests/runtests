@@ -1,0 +1,27 @@
+#!/bin/bash -eu
+#
+#  Tests for Fernet
+
+if [ -d .git ]; then
+  FERNET=$(pwd)/fernet
+  TESTDIR=$(pwd)/tests
+else
+  FERNET=$(pwd)/../fernet
+  TESTDIR=$(pwd)
+fi
+export FERNET
+export TESTDIR
+
+cd "$TESTDIR"
+for TEST in test_*; do
+  cd "$TESTDIR"
+  [ ! -f "$TEST"/run_test ] && continue
+  cd "$TESTDIR"/"$TEST"
+  echo "*** $TEST ***"
+  if ! ./run_test; then
+    echo "!!! TEST FAILED"
+    exit 1
+  fi
+done
+
+exit "$?"
