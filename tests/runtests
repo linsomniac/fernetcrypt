@@ -1,15 +1,15 @@
 #!/bin/bash -eu
 #
-#  Tests for Fernet
+#  Tests for FernetCrypt
 
 if [ -d .git ]; then
-  FERNET=$(pwd)/fernet
+  FERNETCRYPT=$(pwd)/fernetcrypt
   TESTDIR=$(pwd)/tests
 else
-  FERNET=$(pwd)/../fernet
+  FERNETCRYPT=$(pwd)/../fernetcrypt
   TESTDIR=$(pwd)
 fi
-export FERNET
+export FERNETCRYPT
 export TESTDIR
 
 cd "$TESTDIR"

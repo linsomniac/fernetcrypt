@@ -10,18 +10,18 @@ trap "rm -f $SRC $DST" exit
 date >"$SRC"
 
 BEFORE=$(sha1sum <$SRC)
-$FERNET --password "$PASSWORD" encrypt "$SRC" "$DST"
+$FERNETCRYPT --password "$PASSWORD" encrypt "$SRC" "$DST"
 : >"$SRC"
-$FERNET --password "$PASSWORD" decrypt "$DST" "$SRC"
+$FERNETCRYPT --password "$PASSWORD" decrypt "$DST" "$SRC"
 AFTER=$(sha1sum <$SRC)
 if [ "$BEFORE" != "$AFTER" ]; then
   echo "Encryption/decryption failed, $BEFORE != $AFTER"
   exit 1
 fi
 
-$FERNET --raw --password "$PASSWORD" encrypt "$SRC" "$DST"
+$FERNETCRYPT --raw --password "$PASSWORD" encrypt "$SRC" "$DST"
 : >"$SRC"
-$FERNET --raw --password "$PASSWORD" decrypt "$DST" "$SRC"
+$FERNETCRYPT --raw --password "$PASSWORD" decrypt "$DST" "$SRC"
 AFTER=$(sha1sum <$SRC)
 
 if [ "$BEFORE" != "$AFTER" ]; then

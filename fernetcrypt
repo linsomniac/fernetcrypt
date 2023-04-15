@@ -93,7 +93,7 @@ def parse_arguments():
         "SHA256) to implement a 'best practices' for encrypting a file with a "
         "password.  It's primary benefit is that it is easily availabile for Python "
         "programs, simple, and secure.  See for more information: "
-        "https://github.com/linsomniac/fernet",
+        "https://github.com/linsomniac/fernetcrypt",
     )
     parser.add_argument(
         "mode",

@@ -36,7 +36,7 @@ blocked in 40,960 bytes to allow for encrypting files larger than memory.
     Fernet is an encryption that uses existing tools (AES, PKCS7, HMAC, SHA256) to
     implement a 'best practices' for encrypting a file with a password. It's
     primary benefit is that it is easily availabile for Python programs, simple,
-    and secure. See for more information: https://github.com/linsomniac/fernet
+    and secure. See for more information: https://github.com/linsomniac/fernetcrypt
 
 ## Format
 
