@@ -4,7 +4,6 @@
 #
 #  Written by Sean Reifschneider, 2023-04
 
-import sys
 import os
 import base64
 from cryptography.fernet import Fernet
