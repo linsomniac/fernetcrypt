@@ -1,10 +1,11 @@
-# Fernet
+# FernetCrypt
 
 A command-line tool that implements [Fernet encryption](https://cryptography.io/en/latest/fernet/).
 
-Fernet encryption is a Python library that implement best-practices for encrypting
-data using a password.  It is a combination of AES, PKCS7, HMAC, and SHA256 for doing
-the heavy lifting.
+FernetCrypt encryption is a Python library that implement best-practices for encrypting
+data using a password.
+
+Fernet is a combination of AES, PKCS7, HMAC, and SHA256 for doing the heavy lifting.
 
 This tool includes a "raw" mode which just writes the raw salt and then the
 encrypted data, or the normal mode which stores the salt in base85 format and also
@@ -13,7 +14,7 @@ blocked in 40,960 bytes to allow for encrypting files larger than memory.
 
 ## Usage
 
-    usage: fernet [-h] [-p PASSWORD] [-r] {encrypt,decrypt} input_file output_file
+    usage: fernetcrypt [-h] [-p PASSWORD] [-r] {encrypt,decrypt} input_file output_file
 
     Encrypt or decrypt a file based on a password.
 
