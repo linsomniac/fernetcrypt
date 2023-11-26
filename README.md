@@ -14,27 +14,96 @@ blocked in 40,960 bytes to allow for encrypting files larger than memory.
 
 ## Usage
 
-    Usage: fernetcrypt [OPTIONS] COMMAND [ARGS]...                                 
+```
+ Usage: fernetcrypt [OPTIONS] COMMAND [ARGS]...                                 
 
-    Encrypt or decrypt a file based on a password.                                 
+ Encrypt or decrypt a file based on a password.                                 
 
-   ╭─ Options ────────────────────────────────────────────────────────────────────╮
-   │ --install-completion          Install completion for the current shell.      │
-   │ --show-completion             Show completion for the current shell, to copy │
-   │                               it or customize the installation.              │
-   │ --help                        Show this message and exit.                    │
-   ╰──────────────────────────────────────────────────────────────────────────────╯
-   ╭─ Commands ───────────────────────────────────────────────────────────────────╮
-   │ decrypt         Decrypt a file.                                              │
-   │ edit            Edit an encrypted file in place.                             │
-   │ encrypt         Encrypt a file.                                              │
-   ╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --install-completion          Install completion for the current shell.      │
+│ --show-completion             Show completion for the current shell, to copy │
+│                               it or customize the installation.              │
+│ --help                        Show this message and exit.                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────────────────────────╮
+│ decrypt         Decrypt a file.                                              │
+│ edit            Edit an encrypted file in place.                             │
+│ encrypt         Encrypt a file.                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
 
-    Fernet is an encryption that uses existing tools (AES, PKCS7, HMAC, SHA256) to 
-    implement a 'best practices' for encrypting a file with a password.  It's      
-    primary benefit is that it is easily availabile for Python programs, simple,   
-    and secure.  See for more information:                                         
-    https://github.com/linsomniac/fernetcrypt                                      
+ Fernet is an encryption that uses existing tools (AES, PKCS7, HMAC, SHA256) to 
+ implement a 'best practices' for encrypting a file with a password.  It's      
+ primary benefit is that it is easily availabile for Python programs, simple,   
+ and secure.  See for more information:                                         
+ https://github.com/linsomniac/fernetcrypt                                      
+
+ Usage: fernetcrypt encrypt [OPTIONS] INPUT_FILE [OUTPUT_FILE]                  
+
+ Encrypt a file.                                                                
+
+╭─ Arguments ──────────────────────────────────────────────────────────────────╮
+│ *    input_file       TEXT           Input file to encrypt [default: None]   │
+│                                      [required]                              │
+│      output_file      [OUTPUT_FILE]  Output file for the encrypted data      │
+│                                      [default: None]                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --password                TEXT  Password for encryption.  Can also be        │
+│                                 specified in the 'FERNET_PASSWORD'           │
+│                                 environment variable.  Otherwise, it will be │
+│                                 read from the terminal.                      │
+│                                 [env var: FERNET_PASSWORD]                   │
+│                                 [default: None]                              │
+│ --raw         --no-raw          Use 'raw' Fernet encrypted format rather     │
+│                                 than the default.                            │
+│                                 [default: no-raw]                            │
+│ --help                          Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+ Usage: fernetcrypt decrypt [OPTIONS] INPUT_FILE [OUTPUT_FILE]                  
+
+ Decrypt a file.                                                                
+
+╭─ Arguments ──────────────────────────────────────────────────────────────────╮
+│ *    input_file       TEXT           Input file to decrypt [default: None]   │
+│                                      [required]                              │
+│      output_file      [OUTPUT_FILE]  Output file for the plain-text data     │
+│                                      [default: None]                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --password                TEXT  Password for decryption.  Can also be        │
+│                                 specified in the 'FERNET_PASSWORD'           │
+│                                 environment variable.  Otherwise, it will be │
+│                                 read from the terminal.                      │
+│                                 [env var: FERNET_PASSWORD]                   │
+│                                 [default: None]                              │
+│ --raw         --no-raw          Use 'raw' Fernet encrypted format rather     │
+│                                 than the default.                            │
+│                                 [default: no-raw]                            │
+│ --help                          Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+ Usage: fernetcrypt edit [OPTIONS] FILENAME                                     
+
+ Edit an encrypted file in place.                                               
+
+╭─ Arguments ──────────────────────────────────────────────────────────────────╮
+│ *    filename      TEXT  Encrypted file to edit [default: None] [required]   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --password                TEXT  Password for decryption.  Can also be        │
+│                                 specified in the 'FERNET_PASSWORD'           │
+│                                 environment variable.  Otherwise, it will be │
+│                                 read from the terminal.                      │
+│                                 [env var: FERNET_PASSWORD]                   │
+│                                 [default: None]                              │
+│ --raw         --no-raw          Use 'raw' Fernet encrypted format rather     │
+│                                 than the default.                            │
+│                                 [default: no-raw]                            │
+│ --help                          Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+```
 
 ## Format
 
