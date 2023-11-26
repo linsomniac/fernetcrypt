@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -euxv
 #
 #  Test the basics
 
@@ -10,18 +10,18 @@ trap "rm -f $SRC $DST" exit
 date >"$SRC"
 
 BEFORE=$(sha1sum <$SRC)
-$FERNETCRYPT --password "$PASSWORD" encrypt "$SRC" "$DST"
+$FERNETCRYPT encrypt --password "$PASSWORD" "$SRC" "$DST"
 : >"$SRC"
-$FERNETCRYPT --password "$PASSWORD" decrypt "$DST" "$SRC"
+$FERNETCRYPT decrypt --password "$PASSWORD" "$DST" "$SRC"
 AFTER=$(sha1sum <$SRC)
 if [ "$BEFORE" != "$AFTER" ]; then
   echo "Encryption/decryption failed, $BEFORE != $AFTER"
   exit 1
 fi
 
-$FERNETCRYPT --raw --password "$PASSWORD" encrypt "$SRC" "$DST"
+$FERNETCRYPT encrypt --raw --password "$PASSWORD" "$SRC" "$DST"
 : >"$SRC"
-$FERNETCRYPT --raw --password "$PASSWORD" decrypt "$DST" "$SRC"
+$FERNETCRYPT decrypt --raw --password "$PASSWORD" "$DST" "$SRC"
 AFTER=$(sha1sum <$SRC)
 
 if [ "$BEFORE" != "$AFTER" ]; then

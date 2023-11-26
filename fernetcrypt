@@ -12,6 +12,17 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from typing import IO
 import argparse
 from getpass import getpass
+import sys
+import typer
+from typing import Optional
+
+
+app = typer.Typer(help="Encrypt or decrypt a file based on a password.",
+        epilog="Fernet is an encryption that uses existing tools (AES, PKCS7, HMAC, "
+        "SHA256) to implement a 'best practices' for encrypting a file with a "
+        "password.  It's primary benefit is that it is easily availabile for Python "
+        "programs, simple, and secure.  See for more information: "
+        "https://github.com/linsomniac/fernetcrypt")
 
 encrypt_blocksize = 40960
 decrypt_blocksize = 54712
@@ -97,8 +108,8 @@ def parse_arguments():
     )
     parser.add_argument(
         "mode",
-        choices=["encrypt", "decrypt"],
-        help="Mode of operation: encrypt or decrypt",
+        choices=["encrypt", "decrypt", "edit"],
+        help="Mode of operation: encrypt, decrypt or edit",
     )
     parser.add_argument(
         "-p",
@@ -115,7 +126,7 @@ def parse_arguments():
         help="Use 'raw' Fernet encrypted format rather than the default.",
     )
     parser.add_argument("input_file", help="Input file to be encrypted/decrypted")
-    parser.add_argument("output_file", help="Output file after encryption/decryption")
+    parser.add_argument("output_file", required=False, help="Output file after encryption/decryption")
 
     # Parse the command-line arguments
     args = parser.parse_args()
@@ -134,11 +145,65 @@ def parse_arguments():
 def main():
     args = parse_arguments()
 
+    if args.mode != "edit" and args.output_file is None:
+        print("ERROR: Must specify `output_file` unless mode is `edit`")
+        sys.exit(1)
+
     if args.mode == "encrypt":
         fernet_encrypt(args.input_file, args.output_file, args.password, args.raw)
-    else:
+    elif args.mode == "decrypt":
         fernet_decrypt(args.input_file, args.output_file, args.password, args.raw)
+    else:
+        print(f"ERROR: Unknown argument '{args.mode}'")
+        sys.exit(1)
+
+
+@app.command()
+def encrypt(password: str = typer.Option(
+                     None,
+                     prompt="Enter password for encryption",
+                     confirmation_prompt=False,
+                     hide_input=True,
+                     envvar="FERNET_PASSWORD",
+                     help="Password for encryption.  Can also be specified in the "
+                     "'FERNET_PASSWORD' environment variable.  Otherwise, it will be read "
+                     "from the terminal.",),
+            raw: bool = typer.Option(False, help="Use 'raw' Fernet encrypted format rather than the default."),
+            input_file: str = typer.Argument(..., help="Input file to encrypt"),
+            output_file: str = typer.Argument(None, help="Output file for the encrypted data")):
+    """
+    Encrypt a file.
+    """
+    if output_file is None:
+        output_file = input_file + ".fernet"
+
+    fernet_encrypt(input_file, output_file, password, raw)
+
+
+@app.command()
+def decrypt(password: str = typer.Option(
+                     None,
+                     prompt="Enter password for decryption",
+                     confirmation_prompt=False,
+                     hide_input=True,
+                     envvar="FERNET_PASSWORD",
+                     help="Password for decryption.  Can also be specified in the "
+                     "'FERNET_PASSWORD' environment variable.  Otherwise, it will be read "
+                     "from the terminal.",),
+            raw: bool = typer.Option(False, help="Use 'raw' Fernet encrypted format rather than the default."),
+            input_file: str = typer.Argument(..., help="Input file to decrypt"),
+            output_file: str = typer.Argument(None, help="Output file for the plain-text data")):
+    """
+    Decrypt a file.
+    """
+    if output_file is None:
+        if not '.' in input_file:
+            print("ERROR: Input file does not have a '.' in it to strip for default output file name")
+            sys.exit(1)
+        output_file = input_file.rsplit(".", 1)[0]
+
+    fernet_decrypt(input_file, output_file, password, raw)
 
 
 if __name__ == "__main__":
-    main()
+    app()
