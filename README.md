@@ -14,29 +14,27 @@ blocked in 40,960 bytes to allow for encrypting files larger than memory.
 
 ## Usage
 
-    usage: fernetcrypt [-h] [-p PASSWORD] [-r] {encrypt,decrypt} input_file output_file
+    Usage: fernetcrypt [OPTIONS] COMMAND [ARGS]...                                 
 
-    Encrypt or decrypt a file based on a password.
+    Encrypt or decrypt a file based on a password.                                 
 
-    positional arguments:
-      {encrypt,decrypt}     Mode of operation: encrypt or decrypt
-      input_file            Input file to be encrypted/decrypted
-      output_file           Output file after encryption/decryption
+   ╭─ Options ────────────────────────────────────────────────────────────────────╮
+   │ --install-completion          Install completion for the current shell.      │
+   │ --show-completion             Show completion for the current shell, to copy │
+   │                               it or customize the installation.              │
+   │ --help                        Show this message and exit.                    │
+   ╰──────────────────────────────────────────────────────────────────────────────╯
+   ╭─ Commands ───────────────────────────────────────────────────────────────────╮
+   │ decrypt         Decrypt a file.                                              │
+   │ edit            Edit an encrypted file in place.                             │
+   │ encrypt         Encrypt a file.                                              │
+   ╰──────────────────────────────────────────────────────────────────────────────╯
 
-    options:
-      -h, --help            show this help message and exit
-      -p PASSWORD, --password PASSWORD
-                            Password for encryption/decryption (optional). Can
-                            also be specified in the 'FERNET_PASSWORD' environment
-                            variable. Otherwise, it will be read from the
-                            terminal.
-      -r, --raw             Use 'raw' Fernet encrypted format rather than the
-                            default.
-
-    Fernet is an encryption that uses existing tools (AES, PKCS7, HMAC, SHA256) to
-    implement a 'best practices' for encrypting a file with a password. It's
-    primary benefit is that it is easily availabile for Python programs, simple,
-    and secure. See for more information: https://github.com/linsomniac/fernetcrypt
+    Fernet is an encryption that uses existing tools (AES, PKCS7, HMAC, SHA256) to 
+    implement a 'best practices' for encrypting a file with a password.  It's      
+    primary benefit is that it is easily availabile for Python programs, simple,   
+    and secure.  See for more information:                                         
+    https://github.com/linsomniac/fernetcrypt                                      
 
 ## Format
 
