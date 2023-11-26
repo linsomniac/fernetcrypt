@@ -15,14 +15,19 @@ from getpass import getpass
 import sys
 import typer
 from typing import Optional
+import tempfile
+import subprocess
+from hashlib import sha1
 
 
-app = typer.Typer(help="Encrypt or decrypt a file based on a password.",
-        epilog="Fernet is an encryption that uses existing tools (AES, PKCS7, HMAC, "
-        "SHA256) to implement a 'best practices' for encrypting a file with a "
-        "password.  It's primary benefit is that it is easily availabile for Python "
-        "programs, simple, and secure.  See for more information: "
-        "https://github.com/linsomniac/fernetcrypt")
+app = typer.Typer(
+    help="Encrypt or decrypt a file based on a password.",
+    epilog="Fernet is an encryption that uses existing tools (AES, PKCS7, HMAC, "
+    "SHA256) to implement a 'best practices' for encrypting a file with a "
+    "password.  It's primary benefit is that it is easily availabile for Python "
+    "programs, simple, and secure.  See for more information: "
+    "https://github.com/linsomniac/fernetcrypt",
+)
 
 encrypt_blocksize = 40960
 decrypt_blocksize = 54712
@@ -126,7 +131,9 @@ def parse_arguments():
         help="Use 'raw' Fernet encrypted format rather than the default.",
     )
     parser.add_argument("input_file", help="Input file to be encrypted/decrypted")
-    parser.add_argument("output_file", required=False, help="Output file after encryption/decryption")
+    parser.add_argument(
+        "output_file", required=False, help="Output file after encryption/decryption"
+    )
 
     # Parse the command-line arguments
     args = parser.parse_args()
@@ -159,18 +166,23 @@ def main():
 
 
 @app.command()
-def encrypt(password: str = typer.Option(
-                     None,
-                     prompt="Enter password for encryption",
-                     confirmation_prompt=False,
-                     hide_input=True,
-                     envvar="FERNET_PASSWORD",
-                     help="Password for encryption.  Can also be specified in the "
-                     "'FERNET_PASSWORD' environment variable.  Otherwise, it will be read "
-                     "from the terminal.",),
-            raw: bool = typer.Option(False, help="Use 'raw' Fernet encrypted format rather than the default."),
-            input_file: str = typer.Argument(..., help="Input file to encrypt"),
-            output_file: str = typer.Argument(None, help="Output file for the encrypted data")):
+def encrypt(
+    password: str = typer.Option(
+        None,
+        prompt="Enter password for encryption",
+        confirmation_prompt=False,
+        hide_input=True,
+        envvar="FERNET_PASSWORD",
+        help="Password for encryption.  Can also be specified in the "
+        "'FERNET_PASSWORD' environment variable.  Otherwise, it will be read "
+        "from the terminal.",
+    ),
+    raw: bool = typer.Option(
+        False, help="Use 'raw' Fernet encrypted format rather than the default."
+    ),
+    input_file: str = typer.Argument(..., help="Input file to encrypt"),
+    output_file: str = typer.Argument(None, help="Output file for the encrypted data"),
+):
     """
     Encrypt a file.
     """
@@ -181,29 +193,74 @@ def encrypt(password: str = typer.Option(
 
 
 @app.command()
-def decrypt(password: str = typer.Option(
-                     None,
-                     prompt="Enter password for decryption",
-                     confirmation_prompt=False,
-                     hide_input=True,
-                     envvar="FERNET_PASSWORD",
-                     help="Password for decryption.  Can also be specified in the "
-                     "'FERNET_PASSWORD' environment variable.  Otherwise, it will be read "
-                     "from the terminal.",),
-            raw: bool = typer.Option(False, help="Use 'raw' Fernet encrypted format rather than the default."),
-            input_file: str = typer.Argument(..., help="Input file to decrypt"),
-            output_file: str = typer.Argument(None, help="Output file for the plain-text data")):
+def decrypt(
+    password: str = typer.Option(
+        None,
+        prompt="Enter password for decryption",
+        confirmation_prompt=False,
+        hide_input=True,
+        envvar="FERNET_PASSWORD",
+        help="Password for decryption.  Can also be specified in the "
+        "'FERNET_PASSWORD' environment variable.  Otherwise, it will be read "
+        "from the terminal.",
+    ),
+    raw: bool = typer.Option(
+        False, help="Use 'raw' Fernet encrypted format rather than the default."
+    ),
+    input_file: str = typer.Argument(..., help="Input file to decrypt"),
+    output_file: str = typer.Argument(None, help="Output file for the plain-text data"),
+):
     """
     Decrypt a file.
     """
     if output_file is None:
-        if not '.' in input_file:
-            print("ERROR: Input file does not have a '.' in it to strip for default output file name")
+        if not "." in input_file:
+            print(
+                "ERROR: Input file does not have a '.' in it to strip for default output file name"
+            )
             sys.exit(1)
         output_file = input_file.rsplit(".", 1)[0]
 
     fernet_decrypt(input_file, output_file, password, raw)
 
+
+@app.command()
+def edit(
+    password: str = typer.Option(
+        None,
+        prompt="Enter password for editing",
+        confirmation_prompt=False,
+        hide_input=True,
+        envvar="FERNET_PASSWORD",
+        help="Password for decryption.  Can also be specified in the "
+        "'FERNET_PASSWORD' environment variable.  Otherwise, it will be read "
+        "from the terminal.",
+    ),
+    raw: bool = typer.Option(
+        False, help="Use 'raw' Fernet encrypted format rather than the default."
+    ),
+    filename: str = typer.Argument(..., help="Encrypted file to edit"),
+):
+    """
+    Edit an encrypted file in place.
+    """
+    print(f"Editing {filename} with password {password}")
+    import tempfile
+
+    # Creating a temporary file
+    with tempfile.NamedTemporaryFile(mode='w+') as tmp:
+        fernet_decrypt(filename, tmp.name, password, raw)
+        tmp.flush()
+        tmp.seek(0)
+
+        before = sha1(open(tmp.name, 'rb').read()).digest()
+        subprocess.run([os.environ.get("EDITOR", "vi"), tmp.name])
+        after = sha1(open(tmp.name, 'rb').read()).digest()
+
+        if after == before:
+            print("No changes detected, not updating.")
+        else:
+            fernet_encrypt(tmp.name, filename, password, raw)
 
 if __name__ == "__main__":
     app()
