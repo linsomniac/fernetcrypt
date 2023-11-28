@@ -107,6 +107,8 @@ blocked in 40,960 bytes to allow for encrypting files larger than memory.
 
 ## Format
 
+I'm calling this "uPlaybook Fernet Format 1".
+
 The normal format this tool writes Fernet data in is as follows:
 
 - 20 bytes of base85 encoded salt.
@@ -129,8 +131,6 @@ bytes.  This is slightly more space efficient than 4096 bytes, but still fairly
 reasonable for even small machines to be able to handle, in 2023.  The encrypted data
 is in blocks of 54,712 bytes (which is what 40,960 bytes expands to after
 encryption).
-
-I'm calling this "uPlaybook Fernet Format 1".
 
 ## Format (raw)
 
